@@ -135,6 +135,14 @@ async function run() {
             res.json(result);
         });
 
+        // DELETE manage products API
+        app.delete('/moreProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await moreProductsCollection.deleteOne(query);
+            res.json(result);
+        });
+
     }
     finally {
         //   await client.close();
