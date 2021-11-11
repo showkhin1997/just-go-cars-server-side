@@ -20,7 +20,8 @@ async function run() {
         await client.connect();
         const database = client.db("justGoCars");
         const productsCollection = database.collection("products");
-        const OrderCollection = database.collection("order");
+        const orderCollection = database.collection("order");
+        const moreProductsCollection = database.collection("moreProducts");
 
         // POST API
         app.post('/products', async (req, res) => {
@@ -32,9 +33,10 @@ async function run() {
         // POST Place Order API
         app.post('/order', async (req, res) => {
             const order = req.body;
-            const result = await OrderCollection.insertOne(order);
+            const result = await orderCollection.insertOne(order);
             res.json(result);
         });
+
 
         // GET API
         app.get('/products', async (req, res) => {
@@ -48,6 +50,28 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const product = await productsCollection.findOne(query);
+            res.json(product);
+        });
+
+        // POST More Products API
+        app.post('/moreProducts', async (req, res) => {
+            const moreProduct = req.body;
+            const result = await moreProductsCollection.insertOne(moreProduct);
+            res.json(result);
+        });
+
+        // GET More Products API
+        app.get('/moreProducts', async (req, res) => {
+            const cursor = moreProductsCollection.find({});
+            const moreProducts = await cursor.toArray();
+            res.send(moreProducts);
+        });
+
+        // GET more single product
+        app.get('/moreProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const product = await moreProductsCollection.findOne(query);
             res.json(product);
         });
 
