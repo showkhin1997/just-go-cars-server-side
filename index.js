@@ -22,6 +22,7 @@ async function run() {
         const productsCollection = database.collection("products");
         const orderCollection = database.collection("order");
         const moreProductsCollection = database.collection("moreProducts");
+        const usersCollection = database.collection("users");
 
         // POST API
         app.post('/products', async (req, res) => {
@@ -89,6 +90,22 @@ async function run() {
             const cursor = orderCollection.find(query);
             const products = await cursor.toArray();
             res.send(products);
+        });
+
+        // POST Users API
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.json(result);
+        });
+
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+            const updateDoc = { $set: user };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
         });
 
         // DELETE API
