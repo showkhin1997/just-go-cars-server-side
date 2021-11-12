@@ -23,6 +23,7 @@ async function run() {
         const orderCollection = database.collection("order");
         const moreProductsCollection = database.collection("moreProducts");
         const usersCollection = database.collection("users");
+        const reviewCollection = database.collection("userReview");
 
         // POST API
         app.post('/products', async (req, res) => {
@@ -125,6 +126,21 @@ async function run() {
                 isAdmin = true;
             }
             res.json({ admin: isAdmin });
+        });
+
+        // REVIEW POST API
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            console.log(result);
+            res.json(result);
+        });
+
+        // REVIEW GET API
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewCollection.find({});
+            const review = await cursor.toArray();
+            res.send(review);
         });
 
         // DELETE API
